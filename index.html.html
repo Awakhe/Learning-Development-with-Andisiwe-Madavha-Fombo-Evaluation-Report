@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Time Management Workshop — Student Voices</title>
+<style>
+  :root {
+    --bg: #f6f7f5;
+    --card: #ffffff;
+    --text: #1d1f1e;
+    --sub: #5b6560;
+    --border: #e4e7e3;
+    --acc-color: #2e7d4f;
+    --acc-soft: #e7f3ec;
+    --eng-color: #1e5b8c;
+    --eng-soft: #e8f0f7;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.05);
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15171a; --card: #1e2125; --text: #ecefed; --sub: #9aa39d; --border: #30343a;
+      --acc-soft: #163325; --eng-soft: #162635;
+      --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15171a; --card: #1e2125; --text: #ecefed; --sub: #9aa39d; --border: #30343a;
+    --acc-soft: #163325; --eng-soft: #162635;
+    --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.35);
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 36px 20px 64px; }
+  header { text-align: center; margin-bottom: 28px; }
+  h1 { font-size: clamp(22px, 4vw, 30px); margin: 0 0 8px; letter-spacing: -0.02em; }
+  header p { color: var(--sub); margin: 0; font-size: 15px; }
+
+  /* --- Filter tabs --- */
+  .tabs { display: flex; gap: 8px; justify-content: center; margin: 22px 0 18px; flex-wrap: wrap; }
+  .tab {
+    border: 1px solid var(--border); background: var(--card); color: var(--text);
+    padding: 8px 16px; border-radius: 999px; font-size: 13.5px; cursor: pointer;
+    font-weight: 600; transition: all .15s ease;
+  }
+  .tab.active { color: #fff; border-color: transparent; }
+  .tab[data-f="all"].active { background: #555; }
+  .tab[data-f="Accounting"].active { background: var(--acc-color); }
+  .tab[data-f="Engineering"].active { background: var(--eng-color); }
+
+  /* --- Carousel --- */
+  .carousel {
+    position: relative; background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; box-shadow: var(--shadow); padding: 36px 56px; min-height: 190px;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  .slide {
+    display: none; text-align: center; animation: fade .4s ease;
+  }
+  .slide.show { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px);} to {opacity:1; transform: translateY(0);} }
+  .quote { font-size: clamp(16px, 2.6vw, 20px); line-height: 1.5; margin: 0 0 16px; }
+  .quote::before { content: "“"; } .quote::after { content: "”"; }
+  .badge {
+    display: inline-block; font-size: 12px; font-weight: 700; padding: 4px 12px;
+    border-radius: 999px; letter-spacing: 0.02em;
+  }
+  .badge.Accounting { background: var(--acc-soft); color: var(--acc-color); }
+  .badge.Engineering { background: var(--eng-soft); color: var(--eng-color); }
+
+  .nav-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border);
+    background: var(--card); color: var(--text); font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nav-btn:hover { background: var(--bg); }
+  .nav-prev { left: 10px; } .nav-next { right: 10px; }
+
+  .dots { display: flex; gap: 6px; justify-content: center; margin-top: 16px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); cursor: pointer; }
+  .dot.active { background: var(--sub); }
+
+  /* --- Likert summary --- */
+  .summary { margin-top: 46px; }
+  .summary h2 { font-size: 18px; margin: 0 0 4px; }
+  .summary > p { color: var(--sub); font-size: 13.5px; margin: 0 0 18px; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 620px) { .cols { grid-template-columns: 1fr; } }
+  .col-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px;
+  }
+  .col-card h3 { margin: 0 0 2px; font-size: 15px; }
+  .col-card .n { color: var(--sub); font-size: 12px; margin: 0 0 14px; }
+  .stat { margin-bottom: 13px; }
+  .stat:last-child { margin-bottom: 0; }
+  .stat-label { font-size: 12.5px; margin-bottom: 5px; display: flex; justify-content: space-between; }
+  .stat-label b { font-weight: 700; }
+  .bar-track { height: 8px; border-radius: 999px; background: var(--border); overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 999px; }
+  .col-card.Accounting .bar-fill { background: var(--acc-color); }
+  .col-card.Engineering .bar-fill { background: var(--eng-color); }
+  .col-card.Accounting h3 { color: var(--acc-color); }
+  .col-card.Engineering h3 { color: var(--eng-color); }
+
+  footer { text-align: center; color: var(--sub); font-size: 11.5px; margin-top: 40px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Time Management Workshop — Student Voices</h1>
+    <p>Real feedback from Accounting 300 (n=243) and Introduction to Engineering Design (n=142)</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-f="all">All students</button>
+    <button class="tab" data-f="Accounting">Accounting 300</button>
+    <button class="tab" data-f="Engineering">Engineering</button>
+  </div>
+
+  <div class="carousel">
+    <button class="nav-btn nav-prev" aria-label="Previous">&#8249;</button>
+    <div id="slides"></div>
+    <button class="nav-btn nav-next" aria-label="Next">&#8250;</button>
+  </div>
+  <div class="dots" id="dots"></div>
+
+  <div class="summary">
+    <h2>At a glance — Likert scale results</h2>
+    <p>% of respondents who answered Agree or Strongly Agree</p>
+    <div class="cols">
+      <div class="col-card Accounting">
+        <h3>Accounting 300</h3>
+        <div class="n">At-risk cohort · n = 243</div>
+        <div class="stat">
+          <div class="stat-label"><span>Facilitator encouraged engagement</span><b>97%</b></div>
+          <div class="bar-track"><div class="bar-fill" style="width:97%"></div></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label"><span>Facilitator was approachable</span><b>90%</b></div>
+          <div class="bar-track"><div class="bar-fill" style="width:90%"></div></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label"><span>Workshop explained semester planner</span><b>85%</b></div>
+          <div class="bar-track"><div class="bar-fill" style="width:85%"></div></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label"><span>Workshop helped with weekly planner</span><b>76%</b></div>
+          <div class="bar-track"><div class="bar-fill" style="width:76%"></div></div>
+        </div>
+      </div>
+      <div class="col-card Engineering">
+        <h3>Engineering (Mech &amp; Civil)</h3>
+        <div class="n">First-year cohort · n = 142</div>
+        <div class="stat">
+          <div class="stat-label"><span>Understood weekly vs semester planner</span><b>87%</b></div>
+          <div class="bar-track"><div class="bar-fill" style="width:87%"></div></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label"><span>Facilitator encouraged engagement</span><b>91%</b></div>
+          <div class="bar-track"><div class="bar-fill" style="width:91%"></div></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label"><span>Facilitator was approachable</span><b>82%</b></div>
+          <div class="bar-track"><div class="bar-fill" style="width:82%"></div></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label"><span>Workshops helped understand weekly planner</span><b>70%</b></div>
+          <div class="bar-track"><div class="bar-fill" style="width:70%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>Quotes are anonymised student responses from the post-workshop feedback surveys.</footer>
+</div>
+
+<script>
+const testimonials = [
+  {t:"That I could use Google Calendar to set out my schedule — that would be really useful.", c:"Accounting"},
+  {t:"It's never too late. It's all about consistency and having a plan.", c:"Accounting"},
+  {t:"I don't need a miracle — I just need to change one habit at a time, and let go of how I've failed myself previously.", c:"Accounting"},
+  {t:"Hold myself more accountable. Be more scheduled, be honest, and keep up with my schedule.", c:"Accounting"},
+  {t:"There's no such thing as something being too hard — consistency, proper planning and preparation are what get you to a pass.", c:"Accounting"},
+  {t:"Not everything comes easy... and ease should not be accepted.", c:"Accounting"},
+  {t:"Importance of planning ahead.", c:"Accounting"},
+  {t:"I learnt about time management and consistency.", c:"Accounting"},
+  {t:"It's important to plan so you're able to balance academics and social life.", c:"Engineering"},
+  {t:"Time management is very essential — it's better to live on a schedule than go with the flow.", c:"Engineering"},
+  {t:"The Time Management component was very practical and well facilitated. It helped me identify where I waste time and how to prioritise better.", c:"Engineering"},
+  {t:"I am actively attempting to improve my time management ability.", c:"Engineering"},
+  {t:"It's a very helpful component for a first-year student attempting to navigate university.", c:"Engineering"},
+  {t:"The sessions were very helpful — it was just up to me to put in the work in the background as well.", c:"Engineering"},
+  {t:"I must make a timetable to manage my time well.", c:"Engineering"},
+  {t:"Use your time wisely, because you never know what might happen.", c:"Engineering"},
+];
+
+let filter = "all";
+let idx = 0;
+let timer;
+
+const slidesEl = document.getElementById("slides");
+const dotsEl = document.getElementById("dots");
+
+function current() {
+  return filter === "all" ? testimonials : testimonials.filter(x => x.c === filter);
+}
+
+function render() {
+  const list = current();
+  idx = 0;
+  slidesEl.innerHTML = list.map((x,i) => `
+    <div class="slide ${i===0?'show':''}" data-i="${i}">
+      <p class="quote">${x.t}</p>
+      <span class="badge ${x.c}">${x.c === 'Accounting' ? 'Accounting 300' : 'Engineering'}</span>
+    </div>`).join("");
+  dotsEl.innerHTML = list.map((_,i) => `<span class="dot ${i===0?'active':''}" data-i="${i}"></span>`).join("");
+  restartTimer();
+}
+
+function go(i) {
+  const list = current();
+  const slides = slidesEl.querySelectorAll(".slide");
+  const dots = dotsEl.querySelectorAll(".dot");
+  if (!slides.length) return;
+  idx = (i + list.length) % list.length;
+  slides.forEach(s => s.classList.remove("show"));
+  dots.forEach(d => d.classList.remove("active"));
+  slides[idx].classList.add("show");
+  dots[idx].classList.add("active");
+}
+
+function restartTimer() {
+  clearInterval(timer);
+  timer = setInterval(() => go(idx+1), 4500);
+}
+
+document.querySelector(".nav-next").addEventListener("click", () => { go(idx+1); restartTimer(); });
+document.querySelector(".nav-prev").addEventListener("click", () => { go(idx-1); restartTimer(); });
+dotsEl.addEventListener("click", (e) => {
+  if (e.target.classList.contains("dot")) { go(+e.target.dataset.i); restartTimer(); }
+});
+
+document.querySelectorAll(".tab").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    filter = btn.dataset.f;
+    render();
+  });
+});
+
+render();
+</script>
+</body>
+</html>
